@@ -13,16 +13,27 @@ export default class Controller {
   }
 
   subscribeViewEvents() {
-    this.searchFormView.on("@submit", (event) =>
-        this.search(event.detail.value)
-    ).on("@reset", () => this.reset());
+    this.searchFormView
+        .on("@submit", (event) => this.search(event.detail.value))
+        .on("@reset", () => this.reset());
   }
 
-  search(event) {
-    console.log(tag, event, event.detail.value);
+  search(searchKeyword) {
+    console.log(tag, "search", searchKeyword);
+    this.store.search(searchKeyword);
+    this.render();
   }
 
   reset() {
     console.log(tag, 'reset');
+  }
+
+  render() {
+    if (this.store.searchKeyword.length > 0) {
+      this.searchResultView.show(this.store.searchResult);
+      return;
+    }
+
+    this.searchResultView.hide();
   }
 }
