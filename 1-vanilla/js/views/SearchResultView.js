@@ -1,4 +1,4 @@
-import View from './View';
+import View from './View.js';
 import { qs } from "../helpers.js";
 
 export default class SearchResultView extends View {
@@ -30,7 +30,7 @@ class Template {
         `
     }
 
-    _getItem({}) {
+    _getItem({imageUrl, name}) {
         return `
             <li>
                 <img src="${imageUrl}" alt="${name}"/>

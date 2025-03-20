@@ -2,7 +2,7 @@ import Controller from "./Controller.js";
 import Store from "./Store.js";
 import storage from "./storage.js";
 import SearchFormView from "./views/SearchFromView.js";
-import SearchResultView from "./views/SearchResultView";
+import SearchResultView from "./views/SearchResultView.js";
 
 const tag = "[main]";
 
