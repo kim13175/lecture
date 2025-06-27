@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "lite-server --baseDir=\"1-vanilla\""
+    "dev": "lite-server --baseDir=\"2-react\""
   },
   "keywords": [],
   "author": "",
