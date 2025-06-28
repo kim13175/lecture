@@ -20,8 +20,14 @@ class App extends React.Component {
             searchKeyword: "",
             searchResult: [],
             submitted: false,
-            selectedTab: TabType.KEYWORD, 
+            selectedTab: TabType.KEYWORD,
+            keywordList: [], 
         };
+    }
+
+    componentDidMount() {
+        const keywordList = store.getKeywordList();
+        this.setState({ keywordList });
     }
 
     handleChangeInput(event) {
@@ -42,7 +48,8 @@ class App extends React.Component {
 
     search(searchKeyword) {
         const searchResult = store.search(searchKeyword);
-        this.setState({ 
+        this.setState({
+            searchKeyword, 
             searchResult,
             submitted: true,
          });
@@ -102,6 +109,19 @@ class App extends React.Component {
             )
         );
 
+        const keywordList = (
+            <ul className='list'>
+                {this.state.keywordList.map(({ id, keyword }, index) => {
+                    return (
+                        <li key={id} onClick={() => this.search(keyword)}>
+                            <span className='number'>{index + 1}</span>
+                            <span>{keyword}</span>
+                        </li>
+                    );
+                })}
+            </ul>
+        )
+
         /* map 함수는 무조건 반환 값이 있어야 함 (return 문 필수) */
         /* 최상위 레벨의 태그는 하나 밖에 없어야 하기에 만약 둘 이상의 태그가 최상위 레벨에 있다면 프래그먼트를 사용해야 함 */
         const tabs = (
@@ -119,7 +139,7 @@ class App extends React.Component {
                         ); 
                     })}
                 </ul>
-                {this.state.selectedTab === TabType.KEYWORD && <div>추천 검색어</div>}
+                {this.state.selectedTab === TabType.KEYWORD && keywordList}
                 {this.state.selectedTab === TabType.HISTORY && <div>최근 검색어</div>}
             </>
         );
