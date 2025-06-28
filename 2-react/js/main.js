@@ -1,6 +1,16 @@
 /* HTML 파일이 있는 위치 기준으로 계산 */
 import store from './js/Store.js';
 
+const TabType = {
+    KEYWORD: 'KEYWORD',
+    HISTORY: 'HISTORY',
+};
+
+const TabLabel = {
+    [TabType.KEYWORD]: "추천 검색어",
+    [TabType.HISTORY]: "최근 검색어",
+};
+
 /* 컴포넌트화 */
 class App extends React.Component {
     constructor() {
@@ -9,6 +19,8 @@ class App extends React.Component {
         this.state = {
             searchKeyword: "",
             searchResult: [],
+            submitted: false,
+            selectedTab: TabType.KEYWORD, 
         };
     }
 
@@ -90,6 +102,28 @@ class App extends React.Component {
             )
         );
 
+        /* map 함수는 무조건 반환 값이 있어야 함 (return 문 필수) */
+        /* 최상위 레벨의 태그는 하나 밖에 없어야 하기에 만약 둘 이상의 태그가 최상위 레벨에 있다면 프래그먼트를 사용해야 함 */
+        const tabs = (
+            <>
+                <ul className='tabs'>
+                    {Object.values(TabType).map((tabType) => {
+                        return (
+                            <li 
+                            className={this.state.selectedTab === tabType ? 'active' : ''} 
+                            onClick={() => this.setState({ selectedTab: tabType })} 
+                            key={tabType}
+                            >
+                                {TabLabel[tabType]}
+                            </li>
+                        ); 
+                    })}
+                </ul>
+                {this.state.selectedTab === TabType.KEYWORD && <div>추천 검색어</div>}
+                {this.state.selectedTab === TabType.HISTORY && <div>최근 검색어</div>}
+            </>
+        );
+
         return (
             <>
                 <header>
@@ -98,7 +132,7 @@ class App extends React.Component {
                 <div className="container">
                     {searchForm}
                     <div className="content">
-                        {this.state.submitted && searchResult}
+                        {this.state.submitted ? searchResult : tabs}
                     </div>
                 </div>
             </>
