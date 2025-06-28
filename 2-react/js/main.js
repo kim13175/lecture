@@ -1,5 +1,6 @@
 /* HTML 파일이 있는 위치 기준으로 계산 */
 import store from './js/Store.js';
+import { formatRelativeDate } from './js/helpers.js';
 
 const TabType = {
     KEYWORD: 'KEYWORD',
@@ -21,13 +22,15 @@ class App extends React.Component {
             searchResult: [],
             submitted: false,
             selectedTab: TabType.KEYWORD,
-            keywordList: [], 
+            keywordList: [],
+            historyList: [], 
         };
     }
 
     componentDidMount() {
         const keywordList = store.getKeywordList();
-        this.setState({ keywordList });
+        const historyList = store.getHistoryList();
+        this.setState({ keywordList, historyList });
     }
 
     handleChangeInput(event) {
@@ -48,11 +51,14 @@ class App extends React.Component {
 
     search(searchKeyword) {
         const searchResult = store.search(searchKeyword);
+        const historyList = store.getHistoryList();
+
         this.setState({
             searchKeyword, 
             searchResult,
+            historyList,
             submitted: true,
-         });
+        });
     }
 
     handleReset() {
@@ -70,6 +76,13 @@ class App extends React.Component {
         () => {
             console.log(`삭제된 검색어 : ${this.state.searchKeyword}`);    
         });
+    }
+
+    handleClickRemoveHistory(event, keyword) {
+        event.stopPropagation();
+        store.removeHistory(keyword);
+        const historyList = store.getHistoryList();
+        this.setState({ historyList });
     }
 
     render() {
@@ -122,6 +135,20 @@ class App extends React.Component {
             </ul>
         )
 
+        const historyList = (
+            <ul className='list'>
+                {this.state.historyList.map(({id, keyword, date}) => {
+                    return (
+                        <li key={id} onClick={() => this.search(keyword)}>
+                            <span>{keyword}</span>
+                            <span className='date'>{formatRelativeDate(date)}</span>
+                            <button className='btn-remove' onClick={(event) => this.handleClickRemoveHistory(event, keyword)}/>
+                        </li>
+                    );
+                })}
+            </ul>
+        )
+
         /* map 함수는 무조건 반환 값이 있어야 함 (return 문 필수) */
         /* 최상위 레벨의 태그는 하나 밖에 없어야 하기에 만약 둘 이상의 태그가 최상위 레벨에 있다면 프래그먼트를 사용해야 함 */
         const tabs = (
@@ -140,7 +167,7 @@ class App extends React.Component {
                     })}
                 </ul>
                 {this.state.selectedTab === TabType.KEYWORD && keywordList}
-                {this.state.selectedTab === TabType.HISTORY && <div>최근 검색어</div>}
+                {this.state.selectedTab === TabType.HISTORY && historyList}
             </>
         );
 
