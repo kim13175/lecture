@@ -1,41 +1,34 @@
-import { TabType } from "./views/TabView.js";
-import { createNextId } from "./helpers.js";
+import storage from './storage.js';
 
-const tag = "[Store]";
+const tag = "[store]";
 
-export default class Store {
+class Store {
   constructor(storage) {
     console.log(tag, "constructor");
 
     if (!storage) throw "no storage";
 
     this.storage = storage;
-
-    this.searchKeyword = "";
-    this.searchResult = [];
-    this.selectedTab = TabType.KEYWORD;
   }
 
   search(keyword) {
-    this.searchKeyword = keyword;
-    this.searchResult = this.storage.productData.filter((product) =>
-      product.name.includes(keyword)
+    return this.storage.productData.filter((product) =>
+        product.name.includes(keyword)
     );
-    this.addHistory(keyword);
   }
 
   getKeywordList() {
-    return [...this.storage.keywordData];
+    return this.storage.keywordData;
   }
 
   getHistoryList() {
-    return [...this.storage.historyData.sort(this._sortHistory)];
+    return this.storage.historyData.sort(this._sortHistory);
   }
 
   _sortHistory(history1, history2) {
-    return history2.date > history1.date;
+    return history2.data > history1.data;
   }
-
+  
   removeHistory(keyword) {
     this.storage.historyData = this.storage.historyData.filter(
       (history) => history.keyword !== keyword
@@ -61,3 +54,7 @@ export default class Store {
     ];
   }
 }
+
+/* singleton 패턴 */
+const store = new Store(storage);
+export default store
