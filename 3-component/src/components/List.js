@@ -6,7 +6,7 @@ export default class List extends React.Component {
 
         this.state = {
             data: []
-        }
+        };
     }
 
     renderItem(item, index) {
