@@ -5,7 +5,7 @@ import List from './List';
 export default class KeywordList extends React.Component {
     constructor() {
         super();
-
+ 
         this.state = {
             keywordList: []
         };
@@ -24,14 +24,7 @@ export default class KeywordList extends React.Component {
             <List 
                 data={keywordList} 
                 onClick={onClick}
-                renderItem={(item, index) => {
-                    return (
-                        <>
-                            <span className="number">{index + 1}</span>
-                            <span>{item.keyword}</span>
-                        </>
-                    );
-                }}
+                hasIndex
             />
         );
     }

@@ -1,16 +1,37 @@
 import React from "react";
+import { formatRelativeDate } from "../helpers";
 
 /* Composition */
-const List = ({ data = [], onClick, renderItem }) => {
+const List = ({ 
+    data = [], 
+    onClick,
+    hasIndex = false,
+    hasDate = false,
+    onRemove,
+}) => {
+
+    const handleClickRemove = (event, keyword) => {
+        event.stopPropagation();
+        onRemove(keyword);
+    }
+
     return (
         <ul className="list">
-            {data.map((item, index) => {
+            {data.map(({ id, keyword, date }, index) => {
                 return (
                     <li 
-                        key={item.id} 
-                        onClick={() => onClick(item.keyword)}
+                        key={id} 
+                        onClick={() => onClick(keyword)}
                     >
-                        {renderItem(item, index)}
+                        {hasIndex && <span className="number">{index + 1}</span>}
+                        <span>{keyword}</span>
+                        {hasDate && <span className="date">{formatRelativeDate(date)}</span>}
+                        {!!onRemove && (
+                            <button 
+                                className="btn-remove" 
+                                onClick={(event) => handleClickRemove(event, keyword)} 
+                            />
+                        )}
                     </li>
                 );
             })}
